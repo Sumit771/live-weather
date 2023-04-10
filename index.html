@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+    padding: 0;
+    margin: 0;
+}
+html{
+    font-family: Arial, Helvetica, sans-serif;
+}
+body{
+    /* background-image: url('img/bg-img.jpg'); */
+    background-size: cover;
+    color: #fff;
+    
+}
+
+main.container{
+    width: 400px;
+    height: auto;
+    margin: 71px auto;
+    padding-bottom: 1rem;
+    background: linear-gradient( rgb(78, 99, 74), rgb(6, 14, 36));
+}
+
+main .search-area{  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+   
+
+}
+main #location{
+    border: none;
+    outline: none;
+    padding:  5px 8px;
+    border-radius: 14px;
+    margin-top: .5rem;
+}
+.row{
+    /* border: 1px solid; */
+    margin: .4rem 2rem;
+}
+/* main h1{
+    text-shadow:2px 3px 1px 0px #030202;
+} */
+main .second{
+    display: grid;
+    grid-template-columns:1fr 1fr;
+}
+
+#searchBtn{
+    padding: 5px;
+    width: 3rem;
+    background-color: #48c300;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    /* tlinoue: 1px solid white; */
+    /* box-shaow: 1px 1px 1px 1px rgb(93, 161, 238) ; */
+}
+
+/* button after onclick */
+
+
+#location{
+    text-transform: capitalize;
+}
+
+#time{
+ margin-left: .7rem;
+ color: rgb(145, 163, 163);
+ font-size: .5rem;
+}
+
+#icon-container{
+    text-align: center;
+    color: rgb(216, 214, 214);
+    font-size:.7rem ;
+}
+
+
+#weatherData{
+    display: flex;
+    flex-direction: row;
+
+
+}
+#weatherData span{
+    font-size: .4rem;
+}
+#feels-like-container{
+    margin:  auto;
+    font-size: small;
+}
+
+table {
+    border-collapse: separate;
+    border: none;
+    border-spacing: 6px;
+
+}
+hr{
+    width: 80%;
+    opacity: .1;
+    margin: .7rem auto;
+    
+}
+.third{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content:space-between;
+}
+table .low-opacity{
+    color: #9fa29e;
+    font-size: .7rem;
+}
+table td{
+    font-size:.8rem ;
+}
+    </style>
+    
+    <title>My Weather App</title>
+</head>
+
+<body>
+
+
+    <main class="container">
+
+        <div class="search-area">
+            <h2 style="margin-top: 1rem;"> <span style="color:rgb(152, 23, 23)">Live</span> Weather Report</h2>
+
+            <div class="row first">
+                <form action="#">
+                    <input type="search" name="location" id="location" placeholder="Search by city name..">
+                    <button type="submit" onclick="checkWeather()" id="searchBtn">Go</button>
+                </form>
+            </div>
+        </div> <!-- search area end -->
+
+        <div id="weatherDetails">
+            <div id="time">
+                <p id="localTime"></p>
+
+            </div>
+
+            <div class="row second">
+
+                <div id="icon-container">
+                    <img src="" id="icon" alt="icon">
+                    <p id="condition"></p>
+                </div>
+
+                <div id="weatherData">
+                    <div id="tempCity-container">
+                        <div id="city-region-country-container">
+                            <h5 id="city"></h5>
+                            <span id="region-country"></span>
+                        </div>
+                        <h1 id="temp"></h1>
+                    </div>
+                    <div id="feels-like-container">
+                        <h6 id="feelsLike">Feels like</h6>
+                        <p id="feelsLikeTemp"></p>
+                    </div>
+
+
+                </div>
+            </div>
+<hr>
+            <div class="row third">
+                <table>
+                    <tr>
+                        <td class="low-opacity">Humidity</td>
+                        <td id="humidity"></td>
+
+                    </tr>
+                    <tr>
+                        <td class="low-opacity">Wind speed</td>
+                        <td id="wind-speed"></td>
+                    </tr>
+                    <tr>
+                        <td class="low-opacity">Wind direction</td>
+                        <td id="wind-dir"></td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td class="low-opacity">UV Index</td>
+                        <td id="uv"></td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="low-opacity">Precipitation</td>
+                        <td id="precipitation"></td>
+                    </tr>
+                    <tr>
+                        <td class="low-opacity">Visibility</td>
+                        <td id="visibility"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </main> <!-- container end -->
+
+    <!-- <script src="app.js"></script> -->
+    <script>
+    function checkWeather() {
+  
+
+        const apiKey = "76ab7c3676ba4a83a4261350230504";
+        const location = document.querySelector('#location').value;
+        console.log(location); // Replace with the desired location
+      
+        const apiUrl = "https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}";
+      
+      
+      
+         //API call
+      
+        fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`)
+          .then(response => response.json())
+      
+          .then(data => {
+            // Extracting the relevant weather information
+      
+            const temperature = data.current.temp_c;
+            const region = data.location.region;
+            const country = data.location.country;
+            const condition = data.current.condition.text;
+            const windSpeed = data.current.wind_kph;
+            const wind_direction = data.current.wind_dir;
+            const localTime = data.location.localtime;
+            const feelsLike = data.current.feelslike_c;
+            const humidity = data.current.humidity;
+            const wind_kph = data.current.wind_kph;
+            const uv = data.current.uv;
+            const precipitation = data.current.precip_mm;
+            const icon = data.current.condition.icon;
+            const errorCode = data.current.code;
+            const windDirection = data.current.wind_dir;
+            const visibility = data.current.vis_km;
+            
+      
+            
+            
+            console.log(data);
+      
+            // Display the weather information
+            // console.log(`Current temperature in ${location}: ${temperature}°C`);
+            // console.log(`Current condition: ${condition}`);
+            // console.log(`Current wind speed: ${windSpeed} km/h`);
+            // console.log(`Current Wind Direction From: ${wind_direction}`)
+            if (errorCode == 400 || errorCode == 400) {
+              document.querySelector('container').value = "City not found"
+            }
+            document.getElementById('icon').src = icon;
+            document.querySelector('#region-country').innerHTML = " "+region +"," + country;
+            // document.querySelector('#country').innerHTML = country;
+            document.querySelector('#localTime').innerHTML = localTime;
+            document.querySelector('#city').style.textTransform = "capitalize";
+            document.querySelector('#city').innerHTML = location;
+            document.getElementById('temp').innerHTML = Math.round(temperature)  + "°C";
+            document.getElementById('condition').innerHTML = condition;
+            document.querySelector('#feelsLikeTemp').innerHTML = Math.round(feelsLike)   + "°C";
+            document.querySelector('#humidity').innerHTML = humidity + "%";
+            document.querySelector('#wind-speed').innerHTML = wind_kph + " Km/h";
+            document.querySelector('#uv').innerHTML = uv;
+            document.querySelector('#precipitation').innerHTML = precipitation + " mm"
+            document.getElementById('wind-dir').innerHTML = windDirection;
+            document.getElementById('visibility').innerHTML = visibility +" Km";
+          })
+      
+          .catch(error => console.error(error));
+        document.querySelector("form").addEventListener("click", function (event) {
+          event.preventDefault();
+        });
+      
+      }
+      </script>
+</body>
+
+</html>
